@@ -11,6 +11,8 @@ pub struct UIState {
 	pub overview: widgets::overview::Overview,
 	/// Chat data/state.
 	pub chat: widgets::chat::Chat,
+	/// Giveaway data/state.
+	pub giveaway: widgets::giveaway::Giveaway,
 	/// Settings data/state.
 	pub settings: widgets::settings::Settings,
 }
