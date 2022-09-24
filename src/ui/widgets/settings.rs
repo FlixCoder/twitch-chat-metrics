@@ -13,7 +13,7 @@ use serde::{Deserialize, Serialize};
 use crate::ui::UIState;
 
 /// Selector string for notifying of settings updates via a command.
-pub const SETTINGS_UPDATE: &str = "SETTINGS_UPDATE";
+pub const SETTINGS_UPDATE: Selector<()> = Selector::new("SETTINGS_UPDATE");
 
 /// The Settings data + UI state.
 #[derive(Debug, Clone, Serialize, Deserialize, Data, Lens)]
@@ -94,8 +94,8 @@ pub fn widget() -> impl Widget<UIState> {
 		.with_child(columns)
 		.with_default_spacer()
 		.with_child(save)
-		.controller(DataChangeDetector::default())
 		.expand_width()
+		.controller(DataChangeDetector::default())
 		.lens(UIState::settings)
 }
 
@@ -103,7 +103,7 @@ pub fn widget() -> impl Widget<UIState> {
 fn on_save(ctx: &mut EventCtx, data: &mut Settings, _env: &Env) {
 	data.changes = false;
 	data.save().expect("saving settings");
-	ctx.submit_command(Command::new(Selector::new(SETTINGS_UPDATE), (), Target::Auto));
+	ctx.submit_command(Command::new(SETTINGS_UPDATE, (), Target::Auto));
 	tracing::debug!("Settings were saved!");
 }
 
@@ -122,7 +122,7 @@ impl<W: Widget<Settings>> Controller<Settings, W> for DataChangeDetector {
 	) {
 		if let druid::Event::WindowConnected = event {
 			*data = Settings::from_file().unwrap_or_default();
-			ctx.submit_command(Command::new(Selector::new(SETTINGS_UPDATE), (), Target::Auto));
+			ctx.submit_command(Command::new(SETTINGS_UPDATE, (), Target::Auto));
 		}
 
 		if self.0 {

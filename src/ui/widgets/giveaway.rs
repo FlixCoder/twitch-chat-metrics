@@ -1,17 +1,15 @@
 //! Giveaway UI.
 
-use std::sync::Arc;
-
 use druid::{
 	im::{OrdMap, Vector},
 	widget::{Button, Controller, Flex, Label, LineBreaking, List, Scroll, TextBox},
-	Color, Data, Env, EventCtx, Insets, Lens, Selector, Widget, WidgetExt,
+	Color, Data, Env, EventCtx, Insets, Lens, Widget, WidgetExt,
 };
 use rand::Rng;
 
 use super::settings::SETTINGS_UPDATE;
 use crate::{
-	chat::{ClearMessage, Message, CLEAR_CHAT_MESSAGE, NEW_CHAT_MESSAGE},
+	chat::{Message, CLEAR_CHAT_MESSAGE, NEW_CHAT_MESSAGE},
 	ui::UIState,
 };
 
@@ -128,7 +126,7 @@ impl<W: Widget<UIState>> Controller<UIState, W> for MessageAnalytics {
 		env: &Env,
 	) {
 		if let druid::Event::Command(command) = event {
-			if let Some(message) = command.get(Selector::<Arc<Message>>::new(NEW_CHAT_MESSAGE)) {
+			if let Some(message) = command.get(NEW_CHAT_MESSAGE) {
 				// New message, update internal data to show.
 				if message.message.starts_with(&data.giveaway.message_start) {
 					data.giveaway
@@ -146,11 +144,9 @@ impl<W: Widget<UIState>> Controller<UIState, W> for MessageAnalytics {
 						data.giveaway.winners_messages.truncate(100);
 					}
 				}
-			} else if let Some(_cleared) =
-				command.get(Selector::<Arc<ClearMessage>>::new(CLEAR_CHAT_MESSAGE))
-			{
+			} else if let Some(_cleared) = command.get(CLEAR_CHAT_MESSAGE) {
 				// Cleared message.
-			} else if command.get(Selector::<()>::new(SETTINGS_UPDATE)).is_some() {
+			} else if command.get(SETTINGS_UPDATE).is_some() {
 				// Settings changed, reset all the data.
 				data.giveaway.people_entered.clear();
 				data.giveaway.winner = None;

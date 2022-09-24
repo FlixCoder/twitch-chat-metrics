@@ -18,9 +18,9 @@ use typed_builder::TypedBuilder;
 use crate::ui::UIState;
 
 /// Selector string for new chat messages' commands.
-pub const NEW_CHAT_MESSAGE: &str = "NEW_CHAT_MESSAGE";
+pub const NEW_CHAT_MESSAGE: Selector<Arc<Message>> = Selector::new("NEW_CHAT_MESSAGE");
 /// Selector string for cleared chat messages' commands.
-pub const CLEAR_CHAT_MESSAGE: &str = "CLEAR_CHAT_MESSAGE";
+pub const CLEAR_CHAT_MESSAGE: Selector<Arc<ClearMessage>> = Selector::new("CLEAR_CHAT_MESSAGE");
 
 /// Chat receiver spawner.
 #[derive(TypedBuilder)]
@@ -84,7 +84,7 @@ impl ChatReceiver {
 			}
 		});
 		self.event_sender
-			.submit_command(Selector::new(NEW_CHAT_MESSAGE), Arc::new(message), Target::Auto)
+			.submit_command(NEW_CHAT_MESSAGE, Arc::new(message), Target::Auto)
 			.expect("sending new message as command");
 	}
 
@@ -93,7 +93,7 @@ impl ChatReceiver {
 		let message = ClearMessage::from(clear_msg);
 
 		self.event_sender
-			.submit_command(Selector::new(CLEAR_CHAT_MESSAGE), Arc::new(message), Target::Auto)
+			.submit_command(CLEAR_CHAT_MESSAGE, Arc::new(message), Target::Auto)
 			.expect("sending clear message as command");
 	}
 }

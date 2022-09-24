@@ -30,8 +30,7 @@ pub fn widget() -> impl Widget<UIState> {
 			.with_line_break_mode(LineBreaking::WordWrap)
 			.with_text_alignment(TextAlignment::Start)
 			.padding(Insets::uniform_xy(0.0, 2.0))
-	})
-	.lens(Chat::messages);
+	});
 
-	Scroll::new(messages).vertical().expand().lens(UIState::chat)
+	Scroll::new(messages).vertical().expand().lens(Chat::messages).lens(UIState::chat)
 }

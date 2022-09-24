@@ -1,16 +1,14 @@
 //! Overview tab.
 
-use std::sync::Arc;
-
 use druid::{
 	im::HashMap,
 	widget::{Controller, Flex, Label},
-	Data, Lens, Selector, Widget, WidgetExt,
+	Data, Lens, Widget, WidgetExt,
 };
 
 use super::settings::SETTINGS_UPDATE;
 use crate::{
-	chat::{ClearMessage, Message, CLEAR_CHAT_MESSAGE, NEW_CHAT_MESSAGE},
+	chat::{CLEAR_CHAT_MESSAGE, NEW_CHAT_MESSAGE},
 	ui::UIState,
 };
 
@@ -86,7 +84,7 @@ impl<W: Widget<UIState>> Controller<UIState, W> for MessageAnalytics {
 		env: &druid::Env,
 	) {
 		if let druid::Event::Command(command) = event {
-			if let Some(message) = command.get(Selector::<Arc<Message>>::new(NEW_CHAT_MESSAGE)) {
+			if let Some(message) = command.get(NEW_CHAT_MESSAGE) {
 				// New message, update internal data to show.
 				data.overview
 					.unique_chatters
@@ -98,11 +96,9 @@ impl<W: Widget<UIState>> Controller<UIState, W> for MessageAnalytics {
 				if message.subscriber {
 					data.overview.subscriber_messages += 1;
 				}
-			} else if let Some(_cleared) =
-				command.get(Selector::<Arc<ClearMessage>>::new(CLEAR_CHAT_MESSAGE))
-			{
+			} else if let Some(_cleared) = command.get(CLEAR_CHAT_MESSAGE) {
 				data.overview.messages_cleared += 1;
-			} else if command.get(Selector::<()>::new(SETTINGS_UPDATE)).is_some() {
+			} else if command.get(SETTINGS_UPDATE).is_some() {
 				// Settings changed, reset all the data.
 				data.overview.unique_chatters.clear();
 				data.overview.total_messages = 0;

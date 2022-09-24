@@ -9,7 +9,7 @@ use std::thread::JoinHandle;
 
 use druid::{
 	widget::{Controller, Tabs, TabsTransition},
-	Selector, Widget, WidgetExt,
+	Widget, WidgetExt,
 };
 use tokio::sync::oneshot;
 
@@ -54,7 +54,7 @@ impl<W: Widget<UIState>> Controller<UIState, W> for ChatReceiverSpawner {
 		env: &druid::Env,
 	) {
 		if let druid::Event::Command(command) = event {
-			if command.get(Selector::<()>::new(SETTINGS_UPDATE)).is_some() {
+			if command.get(SETTINGS_UPDATE).is_some() {
 				// Clean up previous client thread
 				if let Some(stop_trigger) = self.stop_trigger.take() {
 					stop_trigger.send(()).ok();
